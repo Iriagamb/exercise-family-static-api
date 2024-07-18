@@ -15,6 +15,22 @@ CORS(app)
 # create the jackson family object
 jackson_family = FamilyStructure("Jackson")
 
+jackson_family.add_member(
+    {"first_name":"Gabriela", "age":24, "luky_number":[30,33,13]}
+)
+(
+    {"first_name":"Valentina", "age":26, "luky_number":[20,22,12]}
+)
+(
+    {"first_name":"Rocket", "age":1, "luky_number":[1,2,3]}
+)
+(
+    {"first_name":"Fausto", "age":2, "luky_number":[4,5,6]}
+)
+(
+    {"first_name":"Emma", "age":1, "luky_number":[7,8,9]}
+)
+
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
@@ -27,13 +43,15 @@ def sitemap():
 
 @app.route('/members', methods=['GET'])
 def handle_hello():
+    try:
+        members = jackson_family.get_all_members()
+        if member is not none:
+            return jsonify(members), 200
+        else: 
+            return jsonify({"error": "No existen mienbros"]),400
 
-    # this is how you can use the Family datastructure by calling its methods
-    members = jackson_family.get_all_members()
-    response_body = {
-        "hello": "world",
-        "family": members
-    }
+    except Exception as error:
+        return jsonify
 
 
     return jsonify(response_body), 200
