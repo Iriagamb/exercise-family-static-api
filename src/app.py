@@ -45,16 +45,72 @@ def sitemap():
 def handle_hello():
     try:
         members = jackson_family.get_all_members()
-        if member is not none:
+        if member is not None:
             return jsonify(members), 200
         else: 
-            return jsonify({"error": "No existen mienbros"]),400
+            return jsonify({"error": "No existen miembros"}),400
 
     except Exception as error:
-        return jsonify
+        return jsonify({"error": str(error)}), 500
 
 
-    return jsonify(response_body), 200
+@app.router ('/members', methods=['POST'])
+def  create_member():
+     try: 
+        body = request.get_json()
+        if body is None:
+             return jsonify({"error": "El cuerpo no existe"}), 400
+
+        first_name = body.get("first_name", None)
+        age = body.get("age",None)
+        luky_number = body.get("luky_number", None)
+        id = body.get("id" , None)
+
+        if firts_name is None:
+            return({"error": "El primer nombre es necesario"}),400
+        if age is None:
+            return({"error": "La edad es necesario"}),400
+        if luky_number is None:
+            return({"error": "El numero es necesario"}),400 
+
+        member ={
+            "first_name": first_name,
+            "age": age,
+            "luky_number":luky_number
+            }
+
+        if id is not None:
+            member["id"]= id
+
+        jackson_family.add_member(member)
+        return jsonify(member), 200
+    
+     except Exception as error:
+            return jsonify({"error": str(error)}), 500
+
+@app.route('/member/<int:id>', methods=["GET"])
+def get_one_member(id):
+    try:
+        member = jackson_family.get_member(id)
+        if member:
+            return jsonify(member),200
+        return jsonify({"error": "Miembro no encontrado"}), 400
+
+    except Exception as error:
+        return jsonify({"error": str(error)}), 500    
+
+@app.route('/member/<int:id>', methods=["DELETE"])
+def delete_member(id):
+        try:
+            member = jackson_family.delete_member(id)
+
+            if member["done"]:
+                return jsonify({"done": True}),200
+            else:
+                return jsonify({"error": "Miembro no encontrado"}),400
+
+        except Exception as error:
+            return jsonify({"error": str(error)}), 500
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
